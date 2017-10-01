@@ -24,10 +24,7 @@ const list = [
 
 
 class TicketList extends Component {
-  static propTypes = {
-    navigation:React.PropTypes.object.isRequired,
-    ticketTitle: React.PropTypes.string.isRequired,
-  };
+
 
   constructor(props) {
     super(props);
@@ -145,7 +142,7 @@ class TicketList extends Component {
               rightTitleStyle={{color:'orange'}}
               // avatar={{ uri: item.picture.thumbnail }}
               containerStyle={{ borderBottomWidth: 0 }}
-              onPress={() => this.props.navigation.navigate('Lists_Detail',{ item: item} )}
+              onPress={() => this.props.navigation.navigate('Lists_Detail',{ item: item,headerTitle:'123'} )}
             />
           )}
           keyExtractor={(item,index)=> index}
