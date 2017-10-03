@@ -13,17 +13,24 @@ import {
 } from 'react-native-elements';
 
 class EditForms extends Component {
+
+  constructor(props) {
+   super(props);
+   this.state = { testTitle : this.props.navigation.state.params.title };
+ }
   render() {
     return (
         <View>
           <FormLabel containerStyle={styles.labelContainerStyle}>
-            Name
+            待测功能
           </FormLabel>
           <FormInput
             ref="form2"
             containerRef="containerRefYOYO"
             textInputRef="textInputRef"
-            placeholder="Please enter your name..."
+            placeholder={this.props.navigation.state.params.title}
+            onChangeText={(text)=>this.setState({testTitle:text})}
+            value = {this.state.testTitle}
           />
           <FormLabel
             textInputRef="textInputRef"

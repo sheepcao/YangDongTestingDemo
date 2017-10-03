@@ -113,33 +113,41 @@ export default class TestCase extends Component {
   //   )
   // }
 
-  state = {cases: testPoints}
+
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        cases: testPoints
+      };
+    }
+
 
   componentWillMount() {
-    this.load()
+    // this.load()
   }
-
-  load = async () => {
-    try {
-      const cases = await AsyncStorage.getItem(TESTCASE_STORAGE_KEY)
-
-      if (cases !== null) {
-        this.setState({cases})
-      }
-    } catch (e) {
-      console.error('Failed to load name.')
-    }
-  }
-
-  save = async (cases) => {
-    try {
-      await AsyncStorage.setItem(TESTCASE_STORAGE_KEY, JSON.stringify(cases))
-
-      this.setState({cases})
-    } catch (e) {
-      console.error('Failed to save name.')
-    }
-  }
+  //
+  // load = async () => {
+  //   try {
+  //     const cases = await AsyncStorage.getItem(TESTCASE_STORAGE_KEY)
+  //
+  //     if (cases !== null) {
+  //       this.setState({cases})
+  //     }
+  //   } catch (e) {
+  //     console.error('Failed to load name.')
+  //   }
+  // }
+  //
+  // save = async (cases) => {
+  //   try {
+  //     await AsyncStorage.setItem(TESTCASE_STORAGE_KEY, JSON.stringify(cases))
+  //
+  //     this.setState({cases})
+  //   } catch (e) {
+  //     console.error('Failed to save name.')
+  //   }
+  // }
 
   renderSeparator = () => {
     return (
@@ -160,9 +168,9 @@ export default class TestCase extends Component {
   sectionPress = () => {
     alert('点击section');
   }
-  _onPressTitle = () => {
-    alert('点击Title');
-    this.props.navigation.navigate('Edit_Forms')
+  _onPressTitle = (titleOne) => {
+    console.log('123' + titleOne);
+    this.props.navigation.navigate('Edit_Forms',{title: titleOne})
   }
 
   renderCardConent(testcase, index) {
@@ -238,10 +246,10 @@ export default class TestCase extends Component {
         </View>
         <View>
           {
-            testPoints.map((tc, i) => {
+            this.state.cases.map((tc, i) => {
               return (
                 <Card title={tc.id + '.' + tc.title} titleStyle = {{margin:8,marginBottom:6}}  containerStyle={styles.card_container} dividerStyle= {styles.card_divider}>
-                  <TouchableOpacity onPress={this._onPressTitle} style={{marginLeft:'5%',marginTop:-45, width:'90%',height:40}} />
+                  <TouchableOpacity onPress={() => this._onPressTitle(tc.title)} style={{marginLeft:'5%',marginTop:-45, width:'90%',height:40}} />
                   { this.renderCardConent(tc, i)}
                 </Card>
               )
