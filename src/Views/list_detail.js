@@ -33,7 +33,7 @@ import {
 
 import colors from 'HSColors';
 
-import TestCase from './test_case';
+import TestCase from './testCases/test_case';
 
 
 const deviceW = Dimensions.get('window').width
@@ -152,7 +152,7 @@ export default class DetailView extends Component {
           renderIcon={() => <Icon name="list-alt" size={px2dp(22)} color="#666"/>}
           renderSelectedIcon={() => <Icon name="list-alt" size={px2dp(22)} color="#3496f0"/>}
           onPress={() => this.setState({selectedTab: 'testCase'})}>
-          <TestCase ProductName = {this.props.navigation.state.params.item.title}/>
+          <TestCase ProductName = {this.props.navigation.state.params.item.title} navigation={this.props.navigation}/>
         </TabNavigator.Item>
         <TabNavigator.Item
           selected={this.state.selectedTab === 'configure'}

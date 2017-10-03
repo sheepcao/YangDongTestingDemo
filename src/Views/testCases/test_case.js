@@ -8,7 +8,9 @@ import {
   TouchableHighlight,
   ListView,
   Platform,
-  SectionList
+  SectionList,
+  TouchableOpacity,
+  AsyncStorage
 } from 'react-native';
 
 import {
@@ -20,7 +22,6 @@ import {
 } from 'react-native-elements';
 
 import colors from 'HSColors';
-import fonts from '../config/fonts';
 
 
 const testPoints = [
@@ -69,40 +70,7 @@ const testPoints = [
   }
 ];
 
-const testPoints2 = [{
-      title: '单地址读写',
-      description: '单独修改某地址的寄存器值',
-      data:[]
-    }, {
-      title: '单页面修改读写',
-      description: '读取写入某一片区的寄存器值',
-      data:[{title:'1'}]
-    }, {
-      title: '全部读取写入',
-      description: '读取写入整个寄存器',
-      data:[{title:'1'}]
-    }, {
-      title: '保存读取文件',
-      description: '从文件写入寄存器、将读取的寄存器值保存为文本',
-      data:[{title:'1'}]
-    },{
-      title: 'test',
-      data: [{
-        title: 'test',
-        description: 'sub-test11111'
-      }, {
-        title: 'test',
-        description: 'sub-test22222222'
-      }]
-    }
-  ];
-
-var sections = [
-   { title: "A", data: [{ title: "阿童木" }, { title: "阿玛尼" }, { title: "爱多多" }] },
-   { title: "B", data: [{ title: "表哥" }, { title: "贝贝" }, { title: "表弟" }, { title: "表姐" }, { title: "表叔" }] },
-   { title: "C", data: [{ title: "成吉思汗" }, { title: "超市快递" }] },
-   { title: "W", data: [{ title: "王磊" }, { title: "王者荣耀" }, { title: "往事不能回味" },{ title: "王小磊" }, { title: "王中磊" }, { title: "王大磊" }] },
- ];
+const TESTCASE_STORAGE_KEY = 'ASYNC_STORAGE_TEST_CASES'
 
 
 export default class TestCase extends Component {
@@ -145,6 +113,34 @@ export default class TestCase extends Component {
   //   )
   // }
 
+  state = {cases: testPoints}
+
+  componentWillMount() {
+    this.load()
+  }
+
+  load = async () => {
+    try {
+      const cases = await AsyncStorage.getItem(TESTCASE_STORAGE_KEY)
+
+      if (cases !== null) {
+        this.setState({cases})
+      }
+    } catch (e) {
+      console.error('Failed to load name.')
+    }
+  }
+
+  save = async (cases) => {
+    try {
+      await AsyncStorage.setItem(TESTCASE_STORAGE_KEY, JSON.stringify(cases))
+
+      this.setState({cases})
+    } catch (e) {
+      console.error('Failed to save name.')
+    }
+  }
+
   renderSeparator = () => {
     return (
       <View
@@ -158,7 +154,16 @@ export default class TestCase extends Component {
     );
   };
 
-
+  itemPress = () => {
+    alert('点击item');
+  }
+  sectionPress = () => {
+    alert('点击section');
+  }
+  _onPressTitle = () => {
+    alert('点击Title');
+    this.props.navigation.navigate('Edit_Forms')
+  }
 
   renderCardConent(testcase, index) {
     var subtasks = testcase.subTask;
@@ -183,7 +188,7 @@ export default class TestCase extends Component {
                 subtitleNumberOfLines = {2}
                 containerStyle={{ borderBottomWidth: 0 }}
                 hideChevron = {true}
-                // onPress={() => this.props.navigation.navigate('Lists_Detail',{ item: item,headerTitle:'123'} )}
+                onPress={() => this.sectionPress()}
               />
                 {
                   info.section.description?
@@ -210,7 +215,7 @@ export default class TestCase extends Component {
               subtitleNumberOfLines = {2}
               containerStyle={{ borderBottomWidth: 0 }}
               hideChevron = {true}
-              // onPress={() => this.props.navigation.navigate('Lists_Detail',{ item: item,headerTitle:'123'} )}
+              onPress={() => this.itemPress()}
             />
           )}
           keyExtractor={(item,index)=> index}
@@ -236,6 +241,7 @@ export default class TestCase extends Component {
             testPoints.map((tc, i) => {
               return (
                 <Card title={tc.id + '.' + tc.title} titleStyle = {{margin:8,marginBottom:6}}  containerStyle={styles.card_container} dividerStyle= {styles.card_divider}>
+                  <TouchableOpacity onPress={this._onPressTitle} style={{marginLeft:'5%',marginTop:-45, width:'90%',height:40}} />
                   { this.renderCardConent(tc, i)}
                 </Card>
               )
