@@ -1,5 +1,3 @@
-'use strict';
-
 import React, {
   Component
 } from 'react';
@@ -207,24 +205,7 @@ export default class TestCase extends Component {
 
       this.pressHandler(data, testcase)
 
-
-      //
-      // for (var i = 0; i < this.state.cases.length; i++) {
-      //         var oneData = this.state.cases[i];
-      //         if (oneData.id === testcase.id) {
-      //           allCases[i]=testcase;
-      //           break;
-      //         }
-      //     }
-      // this.setState({cases:allCases});
-
-
     }});
-  }
-  editCallBack = (data,testcase) =>{
-    console.log('5666' + data.title);
-    console.log('8888' + testcase.title);
-
   }
 
   renderCardConent(testcase, index) {
@@ -282,6 +263,8 @@ export default class TestCase extends Component {
           )}
           keyExtractor={(item,index)=> index}
           ItemSeparatorComponent={this.renderSeparator}
+          stickySectionHeadersEnabled= {false}
+
           // SectionSeparatorComponent = {this.renderSeparator}
         />
        </List>
@@ -290,27 +273,25 @@ export default class TestCase extends Component {
 
 
   render() {
-    const {
-      navigation
-    } = this.props;
+
     return (
-      <ScrollView>
+      <View>
         <View style={styles.headerContainer}>
           <Text style={styles.heading}>{this.props.ProductName}</Text>
         </View>
-        <View>
-          {
-            this.state.cases.map((tc, i) => {
-              return (
-                <Card title={tc.id + '.' + tc.title} titleStyle = {{margin:8,marginBottom:6}}  containerStyle={styles.card_container} dividerStyle= {styles.card_divider}>
-                  <TouchableOpacity onPress={() => this._onPressTitle(tc)} style={{marginLeft:'5%',marginTop:-45, width:'90%',height:40}} />
-                  { this.renderCardConent(tc, i)}
-                </Card>
-              )
-            })
-          }
-        </View>
-      </ScrollView>
+        <ScrollView style = {{marginTop:5, marginBottom:49}}>
+            {
+              this.state.cases.map((tc, i) => {
+                return (
+                  <Card title={tc.id + '.' + tc.title} titleStyle = {{margin:8,marginBottom:6}}  containerStyle={styles.card_container} dividerStyle= {styles.card_divider}>
+                    <TouchableOpacity onPress={() => this._onPressTitle(tc)} style={{marginLeft:'5%',marginTop:-45, width:'90%',height:40}} />
+                    { this.renderCardConent(tc, i)}
+                  </Card>
+                )
+              })
+            }
+        </ScrollView>
+    </View>
     )
   }
 }
@@ -323,6 +304,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    marginTop:5,
     backgroundColor: colors.secondary,
   },
   heading: {

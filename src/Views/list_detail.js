@@ -34,6 +34,7 @@ import {
 import colors from 'HSColors';
 
 import TestCase from './testCases/test_case';
+import BasicInfo from './basicPage/basic_info';
 
 
 const deviceW = Dimensions.get('window').width
@@ -112,7 +113,7 @@ export default class DetailView extends Component {
     // headerTitle:navigation.state.params?navigation.state.params.item.title:'工单详情',
     headerTitle: '工单详情',
     headerRight: (
-      <Text style={{color:'#FF2500',marginRight:20,marginTop:5,padding:10,fontSize:18}} onPress={()=>navigation.state.params?navigation.state.params.navigatePress():null}>确认提交</Text>
+      <Text style={{color:'#1785FF',marginRight:15,marginTop:5,padding:10,fontSize:17}} onPress={()=>navigation.state.params?navigation.state.params.navigatePress():null}>确认提交</Text>
     ),
 
   });
@@ -143,7 +144,7 @@ export default class DetailView extends Component {
           renderIcon={() => <Icon name="wpforms" size={px2dp(22)} color="#666"/>}
           renderSelectedIcon={() => <Icon name="wpforms" size={px2dp(22)} color="#3496f0"/>}
           onPress={() => this.setState({selectedTab: 'home'})}>
-          <Home ticketTitle= {this.props.navigation.state.params.item.title}/>
+          <BasicInfo ProductName = {this.props.navigation.state.params.item.title} navigation={this.props.navigation}/>
         </TabNavigator.Item>
         <TabNavigator.Item
           selected={this.state.selectedTab === 'testCase'}

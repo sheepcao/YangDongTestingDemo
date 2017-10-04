@@ -6,6 +6,8 @@ import { StackNavigator } from 'react-navigation';
 import ListsHome from './Views/list_home';
 import DetailView from './Views/list_detail';
 import EditForm from './Views/testCases/edit_case';
+import EditInfo from './Views/basicPage/info_edit';
+
 // const ListsTabView = ({ navigation }) => (
 //   <ListsHome title="首页" navigation={navigation} />
 // );
@@ -29,6 +31,11 @@ const ListsStack = StackNavigator({
   },
   Edit_Forms: {
     screen: EditForm,
+    path: '/',
+
+  },
+  Edit_Infos: {
+    screen: EditInfo,
     path: '/',
 
   },

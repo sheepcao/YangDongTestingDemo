@@ -19,8 +19,8 @@ class EditForms extends Component {
    this.state =
    {
     //  testData:this.props.navigation.state.params.testData
-     testTitle : this.props.navigation.state.params.testData.title,
-     testDescription:this.props.navigation.state.params.testData.description
+     infoTitle : this.props.navigation.state.params.testData.titleKey,
+     infoContent:this.props.navigation.state.params.testData.titleValue
 
    };
  }
@@ -35,8 +35,8 @@ class EditForms extends Component {
    });
 
    confirmModify = () =>{
-     console.log('1111');
-     this.props.navigation.state.params.callback({testTitle:this.state.testTitle,testDescription:this.state.testDescription})
+     console.log('confirmModify');
+     this.props.navigation.state.params.callback({infoContent:this.state.infoContent})
      this.props.navigation.goBack();
    }
 
@@ -44,38 +44,17 @@ class EditForms extends Component {
     return (
         <View>
           <FormLabel containerStyle={styles.labelContainerStyle} labelStyle={styles.heading}>
-            待测功能
+            {this.state.infoTitle}
           </FormLabel>
           <FormInput
-            ref="form2"
+            ref="form3"
             inputStyle={{fontSize:25,paddingRight:20}}
-            containerRef="containerRefYOYO"
-            textInputRef="textInputRef"
-            // placeholder={this.props.navigation.state.params.title}
-            onChangeText={(text)=>this.setState({testTitle:text})}
-            value = {this.state.testTitle}
+            containerRef="containerRefInfo"
+            textInputRef="textInputRefInfof"
+            onChangeText={(text)=>this.setState({infoContent:text})}
+            value = {this.state.infoContent}
           />
-          {
-            this.state.testDescription?
-            <FormLabel
-              textInputRef="textInputRef"
-              containerStyle={styles.labelContainerStyle}
-              labelStyle={styles.heading}
-            >
-              功能描述
-            </FormLabel>
-            :null
-          }
-          {
-            this.state.testDescription?
-            <FormInput
-              inputStyle={{fontSize:25,paddingRight:20}}
-              textInputRef="textInputRef"
-              ref="form1"
-              onChangeText={(text)=>this.setState({testDescription:text})}
-              value = {this.state.testDescription}
-            />:null
-          }
+
 
           <Button
             onPress={() => this.confirmModify()}
