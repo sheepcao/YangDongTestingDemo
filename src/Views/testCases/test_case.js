@@ -1,3 +1,5 @@
+'use strict';
+
 import React, {
   Component
 } from 'react';
@@ -120,34 +122,45 @@ export default class TestCase extends Component {
       this.state = {
         cases: testPoints
       };
+      this._onPressTitle = this._onPressTitle.bind(this);
+      this.load = this.load.bind(this);
+      this.save = this.save.bind(this);
+
+
     }
 
 
   componentWillMount() {
-    // this.load()
+    this.load()
+    console.log('load');
   }
-  //
-  // load = async () => {
-  //   try {
-  //     const cases = await AsyncStorage.getItem(TESTCASE_STORAGE_KEY)
-  //
-  //     if (cases !== null) {
-  //       this.setState({cases})
-  //     }
-  //   } catch (e) {
-  //     console.error('Failed to load name.')
-  //   }
-  // }
-  //
-  // save = async (cases) => {
-  //   try {
-  //     await AsyncStorage.setItem(TESTCASE_STORAGE_KEY, JSON.stringify(cases))
-  //
-  //     this.setState({cases})
-  //   } catch (e) {
-  //     console.error('Failed to save name.')
-  //   }
-  // }
+
+  load = async () => {
+    try {
+      const allCases = await AsyncStorage.getItem(TESTCASE_STORAGE_KEY)
+      console.log('cases await');
+
+      if (allCases !== null) {
+        console.log('before setState');
+        var casesJson = JSON.parse(allCases)
+        this.setState({cases:casesJson})
+        console.log('setState');
+
+      }
+    } catch (e) {
+      console.log('Failed to load name.'+ e)
+    }
+  }
+
+  save = async (cases) => {
+    try {
+      await AsyncStorage.setItem(TESTCASE_STORAGE_KEY, JSON.stringify(cases))
+
+      this.setState({cases})
+    } catch (e) {
+      console.error('Failed to save name.')
+    }
+  }
 
   renderSeparator = () => {
     return (
@@ -162,15 +175,56 @@ export default class TestCase extends Component {
     );
   };
 
-  itemPress = () => {
-    alert('点击item');
+  pressHandler(data,testcase)
+  {
+    testcase.title = data.testTitle;
+    testcase.description = data.testDescription;
+    var allCases = this.state.cases;
+    this.save(allCases)
   }
-  sectionPress = () => {
-    alert('点击section');
+
+  itemPress = (itemInfo) => {
+    console.log('itemPress' + itemInfo);
+    this.props.navigation.navigate('Edit_Forms',{testData: itemInfo,callback:(data,testcase=itemInfo) =>{
+
+      this.pressHandler(data, testcase)
+
+    }})
+
   }
-  _onPressTitle = (titleOne) => {
-    console.log('123' + titleOne);
-    this.props.navigation.navigate('Edit_Forms',{title: titleOne})
+  sectionPress = (sectionInfo) => {
+    console.log('sectionInfo' + sectionInfo);
+    this.props.navigation.navigate('Edit_Forms',{testData: sectionInfo,callback:(data,testcase=sectionInfo) =>{
+
+      this.pressHandler(data, testcase)
+
+    }})
+
+  }
+  _onPressTitle = (testCaseOne) => {
+    console.log('testCaseOne' + testCaseOne);
+    this.props.navigation.navigate('Edit_Forms',{testData: testCaseOne,callback:(data,testcase=testCaseOne) =>{
+
+      this.pressHandler(data, testcase)
+
+
+      //
+      // for (var i = 0; i < this.state.cases.length; i++) {
+      //         var oneData = this.state.cases[i];
+      //         if (oneData.id === testcase.id) {
+      //           allCases[i]=testcase;
+      //           break;
+      //         }
+      //     }
+      // this.setState({cases:allCases});
+
+
+    }});
+  }
+  editCallBack = (data,testcase) =>{
+    console.log('5666' + data.title);
+    console.log('8888' + testcase.title);
+
   }
 
   renderCardConent(testcase, index) {
@@ -196,7 +250,7 @@ export default class TestCase extends Component {
                 subtitleNumberOfLines = {2}
                 containerStyle={{ borderBottomWidth: 0 }}
                 hideChevron = {true}
-                onPress={() => this.sectionPress()}
+                onPress={() => this.sectionPress(info.section)}
               />
                 {
                   info.section.description?
@@ -223,7 +277,7 @@ export default class TestCase extends Component {
               subtitleNumberOfLines = {2}
               containerStyle={{ borderBottomWidth: 0 }}
               hideChevron = {true}
-              onPress={() => this.itemPress()}
+              onPress={() => this.itemPress(info.item)}
             />
           )}
           keyExtractor={(item,index)=> index}
@@ -249,7 +303,7 @@ export default class TestCase extends Component {
             this.state.cases.map((tc, i) => {
               return (
                 <Card title={tc.id + '.' + tc.title} titleStyle = {{margin:8,marginBottom:6}}  containerStyle={styles.card_container} dividerStyle= {styles.card_divider}>
-                  <TouchableOpacity onPress={() => this._onPressTitle(tc.title)} style={{marginLeft:'5%',marginTop:-45, width:'90%',height:40}} />
+                  <TouchableOpacity onPress={() => this._onPressTitle(tc)} style={{marginLeft:'5%',marginTop:-45, width:'90%',height:40}} />
                   { this.renderCardConent(tc, i)}
                 </Card>
               )

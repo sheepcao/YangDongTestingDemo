@@ -16,48 +16,72 @@ class EditForms extends Component {
 
   constructor(props) {
    super(props);
-   this.state = { testTitle : this.props.navigation.state.params.title };
+   this.state =
+   {
+    //  testData:this.props.navigation.state.params.testData
+     testTitle : this.props.navigation.state.params.testData.title,
+     testDescription:this.props.navigation.state.params.testData.description
+
+   };
  }
+
+   static navigationOptions = ({
+     navigation,
+     screenProps
+   }) => ({
+     // headerTitle:navigation.state.params?navigation.state.params.item.title:'工单详情',
+     headerTitle: '内容整改'
+
+   });
+
+   confirmModify = () =>{
+     console.log('1111');
+     this.props.navigation.state.params.callback({testTitle:this.state.testTitle,testDescription:this.state.testDescription})
+     this.props.navigation.goBack();
+   }
+
   render() {
     return (
         <View>
-          <FormLabel containerStyle={styles.labelContainerStyle}>
+          <FormLabel containerStyle={styles.labelContainerStyle} labelStyle={styles.heading}>
             待测功能
           </FormLabel>
           <FormInput
             ref="form2"
+            inputStyle={{fontSize:25}}
             containerRef="containerRefYOYO"
             textInputRef="textInputRef"
-            placeholder={this.props.navigation.state.params.title}
+            // placeholder={this.props.navigation.state.params.title}
             onChangeText={(text)=>this.setState({testTitle:text})}
             value = {this.state.testTitle}
           />
-          <FormLabel
-            textInputRef="textInputRef"
-            containerStyle={styles.labelContainerStyle}
-          >
-            Address
-          </FormLabel>
-          <FormInput
-            textInputRef="textInputRef"
-            ref="form1"
-            placeholder="Please enter your address..."
-          />
-          <FormLabel
-            textInputRef="textInputRef"
-            containerStyle={styles.labelContainerStyle}
-          >
-            Phone
-          </FormLabel>
-          <FormInput
-            textInputRef="textInputRef"
-            placeholder="Please enter your phone number..."
-          />
+          {
+            this.state.testDescription?
+            <FormLabel
+              textInputRef="textInputRef"
+              containerStyle={styles.labelContainerStyle}
+              labelStyle={styles.heading}
+            >
+              功能描述
+            </FormLabel>
+            :null
+          }
+          {
+            this.state.testDescription?
+            <FormInput
+              inputStyle={{fontSize:25,paddingRight:20}}
+              textInputRef="textInputRef"
+              ref="form1"
+              onChangeText={(text)=>this.setState({testDescription:text})}
+              value = {this.state.testDescription}
+            />:null
+          }
+
           <Button
-            onPress={() => console.log('yo')}
+            onPress={() => this.confirmModify()}
             icon={{ name: 'done' }}
-            buttonStyle={{ marginTop: 15 }}
-            title="SUBMIT"
+            buttonStyle={{ marginTop: 15 ,backgroundColor:colors.secondary2}}
+            title="确认修改"
           />
 
         </View>
@@ -74,12 +98,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary2,
   },
   heading: {
-    color: 'white',
+    color: colors.grey2,
     marginTop: 10,
-    fontSize: 22,
+    fontSize: 21,
   },
   labelContainerStyle: {
-    marginTop: 8,
+    margin:12,
   },
 });
 
