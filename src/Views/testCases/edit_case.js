@@ -7,9 +7,7 @@ import {
   Button,
   Text,
   FormInput,
-  FormLabel,
-  CheckBox,
-  SearchBar,
+  FormLabel
 } from 'react-native-elements';
 
 class EditForms extends Component {
@@ -48,7 +46,7 @@ class EditForms extends Component {
           </FormLabel>
           <FormInput
             ref="form2"
-            inputStyle={{fontSize:25,paddingRight:20}}
+            inputStyle={{fontSize:22,paddingRight:'10%'}}
             containerRef="containerRefYOYO"
             textInputRef="textInputRef"
             // placeholder={this.props.navigation.state.params.title}
@@ -69,7 +67,7 @@ class EditForms extends Component {
           {
             this.state.testDescription?
             <FormInput
-              inputStyle={{fontSize:25,paddingRight:20}}
+              inputStyle={{fontSize:22,paddingRight:'10%'}}
               textInputRef="textInputRef"
               ref="form1"
               onChangeText={(text)=>this.setState({testDescription:text})}

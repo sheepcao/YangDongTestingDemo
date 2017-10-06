@@ -4,6 +4,7 @@ import React, {
 import {
   View,
   ScrollView,
+  Dimensions,
   StyleSheet,
   TouchableHighlight,
   ListView,
@@ -23,6 +24,13 @@ import {
 
 import colors from 'HSColors';
 
+const deviceW = Dimensions.get('window').width
+
+const basePx = 375
+
+function px2dp(px) {
+  return px * deviceW / basePx
+}
 
 const testPoints = [
   {
@@ -305,11 +313,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     marginTop:5,
+    height:40,
     backgroundColor: colors.secondary,
   },
   heading: {
     color: 'white',
-    fontSize: 18,
+    fontSize: px2dp(17),
   },
   card: {
     justifyContent: 'center',
@@ -343,7 +352,8 @@ const styles = StyleSheet.create({
   card_container: {
     padding: 5,
     margin: 6,
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop:0,
   },
   card_divider:{
     margin: 10,

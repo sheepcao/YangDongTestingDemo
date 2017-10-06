@@ -48,7 +48,7 @@ class EditForms extends Component {
           </FormLabel>
           <FormInput
             ref="form3"
-            inputStyle={{fontSize:25,paddingRight:20}}
+            inputStyle={{fontSize:22,paddingRight:'10%'}}
             containerRef="containerRefInfo"
             textInputRef="textInputRefInfof"
             onChangeText={(text)=>this.setState({infoContent:text})}

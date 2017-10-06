@@ -23,7 +23,8 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Alert
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -35,6 +36,7 @@ import colors from 'HSColors';
 
 import TestCase from './testCases/test_case';
 import BasicInfo from './basicPage/basic_info';
+import ConfigInfo from './ConfigurationPage/configuration_info';
 
 
 const deviceW = Dimensions.get('window').width
@@ -113,7 +115,7 @@ export default class DetailView extends Component {
     // headerTitle:navigation.state.params?navigation.state.params.item.title:'工单详情',
     headerTitle: '工单详情',
     headerRight: (
-      <Text style={{color:'#1785FF',marginRight:15,marginTop:5,padding:10,fontSize:17}} onPress={()=>navigation.state.params?navigation.state.params.navigatePress():null}>确认提交</Text>
+      <Text style={{color:'#1785FF',marginRight:15,marginTop:px2dp(5),padding:10,fontSize:17}} onPress={()=>navigation.state.params?navigation.state.params.navigatePress():null}>提交</Text>
     ),
 
   });
@@ -126,7 +128,24 @@ export default class DetailView extends Component {
   }
 
   navigatePress = () => {
-    alert('点击headerRight');
+    Alert.alert(
+            '确认当前测试需求并接受此工单?',
+            null,
+            [
+              {
+                text: '接受', onPress: () => {
+                  alert('提交网络请求，后台生成文档，修改订单状态')
+                  this.props.navigation.goBack();
+                }
+              },
+              {
+                text: '拒绝', onPress: () => {
+                  alert('提交网络请求，重新派发工单')
+                  this.props.navigation.goBack();
+                }
+              },
+            ]
+          )
   }
 
   state = {
@@ -162,7 +181,7 @@ export default class DetailView extends Component {
           renderIcon={() => <Icon name="cogs" size={px2dp(22)} color="#666"/>}
           renderSelectedIcon={() => <Icon name="cogs" size={px2dp(22)} color="#3496f0"/>}
           onPress={() => this.setState({selectedTab: 'configure'})}>
-          <Profile ticketTitle= {this.props.navigation.state.params.item.title}/>
+          <ConfigInfo ProductName = {this.props.navigation.state.params.item.title} navigation={this.props.navigation}/>
         </TabNavigator.Item>
       </TabNavigator>
     );

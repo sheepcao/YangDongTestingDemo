@@ -134,12 +134,13 @@ class TicketList extends Component {
             <ListItem
               roundAvatar = {false}
               title={item.title}
-              titleStyle = {{fontSize: 15,width:250}}
+              titleStyle = {{fontSize: 15}}
               titleNumberOfLines = {2}
               subtitle={'委托单位: '+item.clientName}
-              subtitleStyle = {{fontSize:13,width:230}}
-              rightTitle={'状态:'+ item.status}
+              subtitleStyle = {{fontSize:13}}
+              rightTitle={item.status}
               rightTitleStyle={{color:'orange'}}
+              rightTitleContainerStyle={{flex: 0.5,alignItems: 'flex-end',marginLeft:0}}
               // avatar={{ uri: item.picture.thumbnail }}
               containerStyle={{ borderBottomWidth: 0 }}
               onPress={() => this.props.navigation.navigate('Lists_Detail',{ item: item,headerTitle:'123'} )}

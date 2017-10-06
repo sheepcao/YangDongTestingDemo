@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import {
   View,
+  Dimensions,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
@@ -23,6 +24,13 @@ import {
 
 import colors from 'HSColors';
 
+const deviceW = Dimensions.get('window').width
+
+const basePx = 375
+
+function px2dp(px) {
+  return px * deviceW / basePx
+}
 
 const informations = [
   {
@@ -226,7 +234,7 @@ export default class BasicInfo extends Component {
           <View style={styles.headerContainer}>
             <Text style={styles.heading}>{this.props.ProductName}</Text>
           </View>
-          <List containerStyle={{marginTop:5, marginBottom:49+5+32+18+5+5, borderTopWidth: 0, borderBottomWidth: 0}}>
+          <List containerStyle={{marginTop:5, marginBottom:49+40, borderTopWidth: 0, borderBottomWidth: 0}}>
             <SectionList
               sections={this.state.infos}
               renderSectionHeader={(info) => (
@@ -245,7 +253,8 @@ export default class BasicInfo extends Component {
                   titleStyle = {{fontSize: 15.5,fontWeight:'400', marginLeft:15}}
                   titleNumberOfLines = {2}
                   rightTitle={info.item.titleValue}
-                  rightTitleStyle = {{fontSize:14,color:colors.grey2,marginLeft:-100,marginRight:25,}}
+                  rightTitleStyle = {{fontSize:14,color:colors.grey2,marginRight:25,}}
+                  rightTitleContainerStyle={{flex: 2,alignItems: 'flex-end',marginLeft:0}}
                   rightTitleNumberOfLines = {10}
                   containerStyle={{ borderBottomWidth: 0 }}
                   hideChevron = {true}
@@ -269,11 +278,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     marginTop:5,
+    height:40,
     backgroundColor: colors.secondary,
   },
   heading: {
     color: 'white',
-    fontSize: 18,
+    fontSize: px2dp(17),
   },
   name: {
     justifyContent: 'center',
