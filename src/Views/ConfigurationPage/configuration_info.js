@@ -9,19 +9,20 @@ import {
   ListView,
   Platform,
   TouchableOpacity,
-  TextInput
+  TextInput,
 } from 'react-native';
 
 import {
   Text,
   Card,
-  Icon,
   List,
   ListItem,
   FormInput,
   FormLabel,
   normalize
 } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome'
+
 
 import Picker from 'react-native-picker';
 
@@ -150,21 +151,40 @@ export default class ConfigurationView extends Component {
       })
     })
     this.state = {
-      configs: configInfo
+      configs: configInfo,
+      pickerSelectData:''
     };
   }
 
   _inputHandler(data,inputValue)
   {
-    data.userInput = inputValue
+    var finalValue = '';
+    console.log(Array.isArray(inputValue));
+
+    if(Array.isArray(inputValue))
+    {
+      for(var i = 0; i<inputValue.length ; i++)
+      {
+        if (inputValue[i].split('-').length>1) {
+          finalValue = finalValue + inputValue[i].split('-')[1]
+        }else {
+          finalValue = finalValue + inputValue[i]
+        }
+      }
+    }else {
+      finalValue = inputValue
+    }
+    data.userInput = finalValue
     var allConfigs = this.state.configs
     this.setState({configs:allConfigs})
   }
 
   _showContentPicker(dataSource) {
+
         Picker.init({
             pickerData: dataSource.options,
             selectedValue: [dataSource.options[0]],
+
             onPickerConfirm: pickedValue => {
                 console.log('onPickerConfirm', pickedValue);
                 this._inputHandler(dataSource,pickedValue[0])
@@ -181,39 +201,31 @@ export default class ConfigurationView extends Component {
 
 
     _createDateData() {
-       let date = [];
-       for(let i=2017;i<2050;i++){
-           let month = [];
-           for(let j = 1;j<13;j++){
-               let day = [];
-               if(j === 2){
-                   for(let k=1;k<29;k++){
-                       day.push(k+'日');
-                   }
-                   //Leap day for years that are divisible by 4, such as 2000, 2004
-                   if(i%4 === 0){
-                       day.push(29+'日');
-                   }
+      let date = {};
+   for(let i=1950;i<2050;i++){
+       let month = {};
+       for(let j = 1;j<13;j++){
+           let day = [];
+           if(j === 2){
+               for(let k=1;k<29;k++){
+                   day.push(k+'日');
                }
-               else if(j in {1:1, 3:1, 5:1, 7:1, 8:1, 10:1, 12:1}){
-                   for(let k=1;k<32;k++){
-                       day.push(k+'日');
-                   }
-               }
-               else{
-                   for(let k=1;k<31;k++){
-                       day.push(k+'日');
-                   }
-               }
-               let _month = {};
-               _month[j+'月'] = day;
-               month.push(_month);
            }
-           let _date = {};
-           _date[i+'年'] = month;
-           date.push(_date);
+           else if(j in {1:1, 3:1, 5:1, 7:1, 8:1, 10:1, 12:1}){
+               for(let k=1;k<32;k++){
+                   day.push(k+'日');
+               }
+           }
+           else{
+               for(let k=1;k<31;k++){
+                   day.push(k+'日');
+               }
+           }
+           month[j+'月'] = day;
        }
-       return date;
+       date[i+'年'] = month;
+   }
+   return date;
    }
 
    _showDatePicker(dataSource) {
@@ -243,6 +255,52 @@ export default class ConfigurationView extends Component {
        Picker.show();
    }
 
+   _popupDatePicker(data)
+   {
+     this.setState({pickerSelectData:data})
+
+
+    //  this.state.configs.map((data, i) => {
+    //    data.content.map((content, i) => {
+    //      if (content.title === data.title) {
+    //        this.setState({pickerSelectData:})
+    //      }
+         // if (content.type ==='date') {
+         //   content['userInput'] = (selectedValue[0]+'年'+selectedValue[1]+'月'+selectedValue[2]+'日');
+         // }
+    //    })
+    //  })
+
+     this.datePicker.toggle();
+
+   }
+
+   setupDataSource()
+   {
+     if(!this.state.pickerSelectData.type)
+     return ['test'];
+
+     return  (this.state.pickerSelectData.type === 'date')?this._createDateData():this.state.pickerSelectData.options
+   }
+   setupselectedValue()
+   {
+     let date = new Date();
+     let selectedValue = [
+           [date.getFullYear()]+'年',
+           [date.getMonth()+1]+'月',
+           [date.getDate()]+'日'
+       ];
+
+     if(!this.state.pickerSelectData.type)
+     {
+       return ['test'];
+     }else {
+
+       var finalValue = (this.state.pickerSelectData.type==='date')?[selectedValue[0], selectedValue[1], selectedValue[2]]:[this.state.pickerSelectData.options[0]];
+       return finalValue;
+     }
+   }
+
   renderCardConent(config, index) {
     var content = config.content;
     return(
@@ -266,7 +324,7 @@ export default class ConfigurationView extends Component {
       }else if (data.type ==='choose')
       {
         inputComp =
-        <TouchableOpacity style={{flex:2, marginLeft: 5,alignItems:'center',justifyContent:'center'}} onPress={()=>this._showContentPicker(data)}>
+        <TouchableOpacity style={{flex:2, marginLeft: 5,alignItems:'center',justifyContent:'center'}} onPress={()=>this._popupDatePicker(data)}>
             <Text style = {{fontSize:normalize(14), color:(data['userInput'] ==='N/A')?colors.grey3:'black' }} textAlign='center'>
               {
                 data['userInput'] ==='N/A'?'点击选择':data['userInput']
@@ -275,22 +333,41 @@ export default class ConfigurationView extends Component {
         </TouchableOpacity>
 
 
+      }else if (data.type ==='edit&choose')
+      {
+        inputComp =
+        <View style = {{flex:2, flexDirection:'row'}}>
+          <TextInput textAlign='center' style = {{flex:4,alignItems:'flex-end',fontSize:normalize(14),marginLeft: 5, marginBottom:0, color:'black'}}
+            placeholder= {(data.userInput==='N/A')?'点击输入':null}
+            placeholderTextColor = {colors.grey3}
+            keyboardType = {data.keyboardType}
+            onChangeText={(text)=>
+              {
+                this._inputHandler(data,text)
+              }
+            }
+            defaultValue = {(data.userInput==='N/A')?null:data.userInput}
+          />
+          <Icon containerStyle={{justifyContent:'center',alignItems:'center'}} color={colors.grey2} name="caret-down" size={25} style={{flex:1, marginLeft: 5}} onPress={()=>this._popupDatePicker(data)} />
+        </View>
+
       }else if (data.type ==='date')
       {
         let dateNow = new Date();
         let selectedValue = [
-              [dateNow.getFullYear()],
-              [dateNow.getMonth()+1],
-              [dateNow.getDate()]
+              [dateNow.getFullYear()]+'年',
+              [dateNow.getMonth()+1]+'月',
+              [dateNow.getDate()]+'日'
           ];
         inputComp =
-        <TouchableOpacity style={{flex:2, marginLeft: 5,alignItems:'center',justifyContent:'center'}} onPress={()=>this._showDatePicker(data)}>
+        <TouchableOpacity style={{flex:2, marginLeft: 5,alignItems:'center',justifyContent:'center'}} onPress={()=>this._popupDatePicker(data)}>
             <Text style = {{fontSize:normalize(14), color:(data['userInput'] ==='N/A')?colors.grey3:'black' }} textAlign='center'>
               {
                 data['userInput'] ==='N/A'?'点击选择':data['userInput']
                 // data['userInput'] ==='N/A'?(selectedValue[0]+'年'+selectedValue[1]+'月'+selectedValue[2]+'日'):data['userInput']
               }
             </Text>
+
         </TouchableOpacity>
 
 
@@ -303,7 +380,6 @@ export default class ConfigurationView extends Component {
               {data.title}
             </Text>
              {inputComp}
-
          </View>
         )
       })
@@ -330,6 +406,20 @@ export default class ConfigurationView extends Component {
               })
             }
         </ScrollView>
+        <Picker
+                ref={picker => this.datePicker = picker}
+                style={{height: 260}}
+                pickerBtnText = '确认'
+                pickerCancelBtnText = '取消'
+                showMask={true}
+                showDuration={300}
+                pickerData={this.setupDataSource()}
+                selectedValue={this.setupselectedValue()}
+                onPickerDone={(pickedValue) => {
+                  this._inputHandler(this.state.pickerSelectData,pickedValue)
+                }}
+            />
+
     </View>
     )
   }
